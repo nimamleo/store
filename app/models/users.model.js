@@ -1,12 +1,12 @@
 const { default: mongoose } = require("mongoose");
 
 const Schema = new mongoose({
-    first_name: { type: String, required: true },
-    last_name: { type: String, required: true },
-    username: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
+    first_name: { type: String },
+    last_name: { type: String },
+    username: { type: String, lowercase: true },
+    phone: { type: String },
+    email: { type: String, lowercase: true },
+    password: { type: String },
     otp: {
         type: Object,
         default: {
@@ -17,9 +17,9 @@ const Schema = new mongoose({
     bills: { type: [], default: [] },
     discount: { type: Number, default: 0 },
     birthday: { type: String, default: 0 },
-    roles: { type: [String] , default:["USER"] },
+    roles: { type: [String], default: ["USER"] },
 });
 
 module.exports = {
-UserModel: mongoose.Model("user", Schema),
+    UserModel: mongoose.Model("user", Schema),
 };
