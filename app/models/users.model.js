@@ -1,10 +1,10 @@
 const { default: mongoose } = require("mongoose");
 
-const Schema = new mongoose({
+const Schema = new mongoose.Schema({
     first_name: { type: String },
     last_name: { type: String },
     username: { type: String, lowercase: true },
-    phone: { type: String },
+    mobile: { type: String, required: true },
     email: { type: String, lowercase: true },
     password: { type: String },
     otp: {
@@ -21,5 +21,5 @@ const Schema = new mongoose({
 });
 
 module.exports = {
-    UserModel: mongoose.Model("user", Schema),
+    UserModel: mongoose.model("user", Schema),
 };

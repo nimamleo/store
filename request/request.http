@@ -1,7 +1,6 @@
-POST http://127.0.0.1:4000
+POST http://127.0.0.1:4000/user/login
 Content-Type: application/json
 
 {
-    "email":"nima@gmail.com",
-    "password":"123456"
-}
+    "phone":"09190046131"
+}  

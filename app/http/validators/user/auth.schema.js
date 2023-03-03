@@ -1,12 +1,22 @@
 const Joi = require("@hapi/joi");
-const joi = require("@hapi/joi");
-const authSchema = joi.object({
-    email: joi.string().lowercase().trim().email().required(),
-    password: Joi.string().min(6).max(16).trim().required(),
+const getOtpSchema = Joi.object({
+    mobile: Joi.string()
+        .length(11)
+        .pattern(/^09[0-9]{9}$/)
+        .error(new Error("phone number is not valid")),
+});
+const checkOtpSchema = Joi.object({
+    mobile: Joi.string()
+        .length(11)
+        .pattern(/^09[0-9]{9}$/)
+        .error(new Error("phone number is not valid")),
+    code: Joi.string()
+        .min(4)
+        .max(6)
+        .error(new Error("the sent code is not valid")),
 });
 
-
-
 module.exports = {
-    authSchema
-}
+    getOtpSchema,
+    checkOtpSchema,
+};

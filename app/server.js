@@ -4,6 +4,9 @@ const morgan = require("morgan");
 const path = require("path");
 const { AllRoutes } = require("./router/router");
 const createError = require("http-errors");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+const cors = require('cors');
 
 module.exports = class Application {
     #app = express();
@@ -19,10 +22,38 @@ module.exports = class Application {
         this.errorHandling();
     }
     configApplication() {
+        this.#app.use(cors())
         this.#app.use(morgan("dev"));
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({ extended: true }));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
+        this.#app.use(
+            "/api-doc",
+            swaggerUI.serve,
+            swaggerUI.setup(
+                swaggerJsDoc({
+                    swaggerDefinition: {
+                        info: {
+                            title: "my store",
+                            version: "1.0.0",
+                            description:
+                                "practice for creating a real shop project",
+                            contact: {
+                                name: "nimamleo",
+                                url: "https:///nimamleo.pw",
+                                email: "nimamahini81@gmail.com",
+                            },
+                        },
+                        servers: [
+                            {
+                                url: "http://127.0.0.1:4000",
+                            },
+                        ],
+                    },
+                    apis: ["./app/router/**/*.js"],
+                })
+            )
+        );
     }
     createServer() {
         const http = require("http");
@@ -57,6 +88,7 @@ module.exports = class Application {
             const serverError = createError.InternalServerError();
             const statusCode = error.status || serverError.statusCode;
             const message = error.message || serverError.message;
+            console.log(error);
             return res.status(statusCode).json({
                 errors: {
                     statusCode,
