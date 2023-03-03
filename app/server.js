@@ -3,6 +3,7 @@ const { default: mongoose } = require("mongoose");
 const morgan = require("morgan");
 const path = require("path");
 const { AllRoutes } = require("./router/router");
+const createError = require("http-errors");
 
 module.exports = class Application {
     #app = express();
@@ -53,11 +54,12 @@ module.exports = class Application {
             next(createError.NotFound("page not found"));
         });
         this.#app.use((error, req, res, next) => {
-            const statusCode = error.status || 500;
-            const message = error.message || "intervall error";
+            const serverError = createError.InternalServerError();
+            const statusCode = error.status || serverError.statusCode;
+            const message = error.message || serverError.message;
             return res.status(statusCode).json({
-                statusCode,
                 errors: {
+                    statusCode,
                     message,
                 },
             });
