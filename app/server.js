@@ -6,7 +6,7 @@ const { AllRoutes } = require("./router/router");
 const createError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
-const cors = require('cors');
+const cors = require("cors");
 
 module.exports = class Application {
     #app = express();
@@ -16,13 +16,14 @@ module.exports = class Application {
         this.#PORT = PORT;
         this.#DB_URI = DB_URI;
         this.configApplication();
+        this.inintRedis();
         this.connectToMongoDB();
         this.createServer();
         this.createRoutes();
         this.errorHandling();
     }
     configApplication() {
-        this.#app.use(cors())
+        this.#app.use(cors());
         this.#app.use(morgan("dev"));
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({ extended: true }));
@@ -76,6 +77,9 @@ module.exports = class Application {
             await mongoose.connection.close();
             process.exit(0);
         });
+    }
+    inintRedis() {
+        require("./utils/init-redis");
     }
     createRoutes() {
         this.#app.use(AllRoutes);

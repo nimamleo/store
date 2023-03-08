@@ -9,11 +9,11 @@ const {
     checkOtpSchema,
 } = require("../../../validators/user/auth.schema");
 const { UserModel } = require("../../../../models/users.model");
-const { EXPIRES_IN, USER_ROLE } = require("../../../../utils/constant");
 const Controller = require("../../controller");
 const {
     VerifyRefreshToken,
 } = require("../../../middlewares/VerifyAccessToken");
+const { ROLES } = require("../../../../utils/constant");
 
 class UserAuthController extends Controller {
     async getOtp(req, res, next) {
@@ -62,7 +62,7 @@ class UserAuthController extends Controller {
             const mobile = await VerifyRefreshToken(refreshToken);
             const user = await UserModel.findOne({ mobile });
             const accessToken = await SignAccessToken(user._id);
-            const newRefreshToken = await SignAccessToken(user._id);
+            const newRefreshToken = await SignRefreshToken(user._id);
             res.json({
                 accessToken,
                 refreshToken: newRefreshToken,
@@ -74,7 +74,7 @@ class UserAuthController extends Controller {
     async saveUser(mobile, code) {
         let otp = {
             code,
-            expiresIn: EXPIRES_IN,
+            expiresIn: new Date().getTime() + 120000,
         };
         const result = await this.checkExistUser(mobile);
         if (result) {
@@ -83,7 +83,7 @@ class UserAuthController extends Controller {
         return !!(await UserModel.create({
             mobile,
             otp,
-            roles: [USER_ROLE],
+            roles: [ROLES.USER],
         }));
     }
     async checkExistUser(mobile) {

@@ -1,7 +1,12 @@
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
 const { UserModel } = require("../models/users.model");
-const { ACCESS_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require("./constant");
+const {
+    ACCESS_TOKEN_SECRET_KEY,
+    REFRESH_TOKEN_SECRET_KEY,
+} = require("./constant");
+const redisClient = require("./init-redis");
+
 function randomNumberGenerator() {
     return Math.floor(Math.random() * 90000 + 10000);
 }
@@ -30,15 +35,26 @@ function SignRefreshToken(userId) {
         const options = {
             expiresIn: "1y",
         };
-        jwt.sign(payload, REFRESH_TOKEN_SECRET_KEY, options, (err, token) => {
-            if (err) reject(createError.InternalServerError("server error"));
-            resolve(token);
-        });
+        jwt.sign(
+            payload,
+            REFRESH_TOKEN_SECRET_KEY,
+            options,
+            async (err, token) => {
+                if (err)
+                    reject(createError.InternalServerError("server error"));
+                await redisClient.SETEX(
+                    String(userId),
+                    365 * 24 * 60 * 60,
+                    token
+                );
+                resolve(token);
+            }
+        );
     });
 }
 
 module.exports = {
     randomNumberGenerator,
     SignAccessToken,
-    SignRefreshToken
+    SignRefreshToken,
 };
