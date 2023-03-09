@@ -1,7 +1,7 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const createError = require("http-errors");
+const createHttpError = require("http-errors");
 
 function createRoute(req) {
     const date = new Date();
@@ -26,14 +26,20 @@ function createRoute(req) {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const filePath = createRoute(req);
-        cb(null, filePath);
+        if (file?.originalname) {
+            const filePath = createRoute(req);
+            return cb(null, filePath);
+        }
+        cb(null, null);
     },
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const fileName = String(new Date().getTime() + ext);
-        req.body.fileName = fileName;
-        cb(null, fileName);
+        if (file?.originalname) {
+            const ext = path.extname(file.originalname);
+            const fileName = String(new Date().getTime() + ext);
+            req.body.fileName = fileName;
+            return cb(null, fileName);
+        }
+        cb(null, null);
     },
 });
 
@@ -43,10 +49,16 @@ function fileFilter(req, file, cb) {
     if (mimetypes.includes(ext)) {
         return cb(null, true);
     }
-    return cb(createError.BadRequest("format of file is not valid"));
+    return cb(createHttpError.BadRequest("format of file is not valid"));
 }
 
-const uploadFile = multer({ storage, fileFilter });
+const maxSize = 1 * 1000 * 1000;
+
+const uploadFile = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: maxSize },
+});
 
 module.exports = {
     uploadFile,

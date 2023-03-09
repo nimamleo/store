@@ -1,4 +1,4 @@
-const createError = require("http-errors");
+const createHttpError = require("http-errors");
 const {
     randomNumberGenerator,
     SignAccessToken,
@@ -10,9 +10,7 @@ const {
 } = require("../../../validators/user/auth.schema");
 const { UserModel } = require("../../../../models/users.model");
 const Controller = require("../../controller");
-const {
-    VerifyRefreshToken,
-} = require("../../../middlewares/VerifyAccessToken");
+const { VerifyRefreshToken } = require("../../../../utils/functions");
 const { ROLES } = require("../../../../utils/constant");
 
 class UserAuthController extends Controller {
@@ -22,7 +20,7 @@ class UserAuthController extends Controller {
             const { mobile } = req.body;
             const code = randomNumberGenerator();
             const result = await this.saveUser(mobile, code);
-            if (!result) throw createError.Unauthorized("login failed");
+            if (!result) throw createHttpError.Unauthorized("login failed");
             return res.status(200).send({
                 data: {
                     statusCode: 200,
@@ -40,12 +38,14 @@ class UserAuthController extends Controller {
             await checkOtpSchema.validateAsync(req.body);
             const { mobile, code } = req.body;
             const user = await UserModel.findOne({ mobile });
-            if (!user) throw createError.NotFound("user not found");
+            if (!user) throw createHttpError.NotFound("user not found");
             if (user.otp.code != code)
-                throw createError.Unauthorized("the sent code is not valid");
+                throw createHttpError.Unauthorized(
+                    "the sent code is not valid"
+                );
             const now = new Date();
             if (+user.otp.expiresIn < now)
-                throw createError.Unauthorized("your code is expired");
+                throw createHttpError.Unauthorized("your code is expired");
             const accessToken = await SignAccessToken(user._id);
             const refreshToken = await SignRefreshToken(user._id);
             return res.json({

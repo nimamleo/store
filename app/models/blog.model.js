@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const commentSchema = new mongoose.Schema({
-    user: { type: mongoose.Types.ObjectId, ref: "users", required: true },
+    user: { type: mongoose.Types.ObjectId, ref: "user", required: true },
     comment: { type: String, required: true },
     createdAt: { type: Date, default: new Date().getTime() },
     parent: { type: mongoose.Types.ObjectId },
@@ -9,24 +9,45 @@ const commentSchema = new mongoose.Schema({
 
 const Schema = new mongoose.Schema(
     {
-        autor: { type: mongoose.Types.ObjectId, required: true },
+        author: { type: mongoose.Types.ObjectId, ref: "user", required: true },
         title: { type: String, required: true },
         text: { type: String, required: true },
         short_text: { type: String, required: true },
         image: { type: String, required: true },
         tags: { type: [String], default: [] },
-        category: { type: [mongoose.Types.ObjectId], required: true },
+        category: {
+            type: mongoose.Types.ObjectId,
+            ref: "category",
+            required: true,
+        },
         comments: { type: [commentSchema], default: [] },
-        like: { type: [mongoose.Types.ObjectId], ref: "users", default: [] },
-        disLike: { type: [mongoose.Types.ObjectId], ref: "users", default: [] },
-        bookMark: {
+        likes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
+        disLikes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
+        bookMarks: {
             type: [mongoose.Types.ObjectId],
-            ref: "users",
+            ref: "user",
             default: [],
         },
     },
-    { timestamps: true, versionkey: false }
+    {
+        timestamps: true,
+        versionkey: false,
+        toJSON: {
+            virtuals: true,
+        },
+    }
 );
+
+Schema.virtual("user", {
+    ref: "user",
+    localField: "_id",
+    foreignField: "author",
+});
+Schema.virtual("category_detail", {
+    ref: "category",
+    localField: "_id",
+    foreignField: "category",
+});
 
 module.exports = {
     BlogModel: mongoose.model("blog", Schema),

@@ -1,7 +1,10 @@
 const { CategoryModel } = require("../../../models/categories.model");
 const Controller = require("../controller");
-const createError = require("http-errors");
-const { addCategorySchema, updateCategorySchema } = require("../../validators/admin/category.schema");
+const createHttpError = require("http-errors");
+const {
+    addCategorySchema,
+    updateCategorySchema,
+} = require("../../validators/admin/category.schema");
 const { default: mongoose } = require("mongoose");
 
 class CategoryController extends Controller {
@@ -11,7 +14,9 @@ class CategoryController extends Controller {
             const { title, parent } = req.body;
             const category = await CategoryModel.create({ title, parent });
             if (!category)
-                throw createError.InternalServerError("internall server error");
+                throw createHttpError.InternalServerError(
+                    "internall server error"
+                );
             return res.status(201).json({
                 data: {
                     statusCode: 201,
@@ -30,7 +35,7 @@ class CategoryController extends Controller {
                 $or: [{ _id: category._id }, { parent: category._id }],
             });
             if (deleteResult.deletedCount == 0)
-                throw createError.InternalServerError(
+                throw createHttpError.InternalServerError(
                     "can not remove category"
                 );
             return res.status(200).json({
@@ -48,13 +53,13 @@ class CategoryController extends Controller {
             const { id } = req.params;
             const { title } = req.body;
             this.checkExistsCategory(id);
-            await updateCategorySchema.validateAsync(req.body)
+            await updateCategorySchema.validateAsync(req.body);
             const updateResult = await CategoryModel.updateOne(
                 { _id: id },
-                { $set: {title} }
+                { $set: { title } }
             );
             if (updateResult.modifiedCount == 0)
-                throw createError.InternalServerError("can not update");
+                throw createHttpError.InternalServerError("can not update");
             return res.status(200).json({
                 statusCode: 200,
                 message: "update successfully done",
@@ -168,7 +173,8 @@ class CategoryController extends Controller {
                 { parent: undefined },
                 { __v: 0 }
             );
-            if (!parents) throw createError.NotFound("there is no category");
+            if (!parents)
+                throw createHttpError.NotFound("there is no category");
             return res.status(200).json({
                 data: {
                     statusCode: 200,
@@ -187,7 +193,9 @@ class CategoryController extends Controller {
                 { __v: 0, parent: 0 }
             );
             if (!children)
-                throw createError.NotFound("we can not find sub categories");
+                throw createHttpError.NotFound(
+                    "we can not find sub categories"
+                );
             return res.status(200).json({
                 data: {
                     statusCode: 200,
@@ -201,7 +209,8 @@ class CategoryController extends Controller {
 
     async checkExistsCategory(id) {
         const category = await CategoryModel.findById(id);
-        if (!category) throw createError.NotFound("category does not exist");
+        if (!category)
+            throw createHttpError.NotFound("category does not exist");
         return category;
     }
 }

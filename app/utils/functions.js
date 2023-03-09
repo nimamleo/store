@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const createError = require("http-errors");
+const createHttpError = require("http-errors");
 const { UserModel } = require("../models/users.model");
 const {
     ACCESS_TOKEN_SECRET_KEY,
@@ -23,7 +23,8 @@ function SignAccessToken(userId) {
             expiresIn: "1h",
         };
         jwt.sign(payload, ACCESS_TOKEN_SECRET_KEY, options, (err, token) => {
-            if (err) reject(createError.InternalServerError("server error"));
+            if (err)
+                reject(createHttpError.InternalServerError("server error"));
             resolve(token);
         });
     });
@@ -43,7 +44,7 @@ function SignRefreshToken(userId) {
             options,
             async (err, token) => {
                 if (err)
-                    reject(createError.InternalServerError("server error"));
+                    reject(createHttpError.InternalServerError("server error"));
                 await redisClient.SETEX(
                     String(userId),
                     365 * 24 * 60 * 60,
@@ -55,9 +56,38 @@ function SignRefreshToken(userId) {
     });
 }
 
-function deleteFileInPublic(fileAddress) {
-    const pathFile = path.join(__dirname, "..", "..", "public", fileAddress);
-    fs.unlinkSync(pathFile);
+function VerifyRefreshToken(token) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, REFRESH_TOKEN_SECRET_KEY, async (err, payload) => {
+            if (err) reject(createHttpError.Unauthorized("please login"));
+            const { mobile } = payload || {};
+            const user = await UserModel.findOne(
+                { mobile },
+                { password: 0, otp: 0 }
+            );
+            if (!user) reject(createHttpError.Unauthorized("user not found"));
+            const refreshToken = await redisClient.get(
+                String(user?._id || "key_default")
+            );
+            if (!refreshToken)
+                reject(createHttpError.Unauthorized("login failed"));
+            if (token === refreshToken) return resolve(mobile);
+            reject(createHttpError.Unauthorized("login failed"));
+        });
+    });
+}
+
+function deleteFileInPublic(fileAddress = "null.png") {
+    if (fileAddress) {
+        const pathFile = path.join(
+            __dirname,
+            "..",
+            "..",
+            "public",
+            fileAddress
+        );
+        if (fs.existsSync(pathFile)) fs.unlinkSync(pathFile);
+    }
 }
 
 module.exports = {
@@ -65,4 +95,5 @@ module.exports = {
     SignAccessToken,
     SignRefreshToken,
     deleteFileInPublic,
+    VerifyRefreshToken,
 };

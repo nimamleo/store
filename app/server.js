@@ -3,7 +3,7 @@ const { default: mongoose } = require("mongoose");
 const morgan = require("morgan");
 const path = require("path");
 const { AllRoutes } = require("./router/router");
-const createError = require("http-errors");
+const createHttpError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const cors = require("cors");
@@ -86,10 +86,10 @@ module.exports = class Application {
     }
     errorHandling() {
         this.#app.use((req, res, next) => {
-            next(createError.NotFound("page not found"));
+            next(createHttpError.NotFound("page not found"));
         });
         this.#app.use((error, req, res, next) => {
-            const serverError = createError.InternalServerError();
+            const serverError = createHttpError.InternalServerError();
             const statusCode = error.status || serverError.statusCode;
             const message = error.message || serverError.message;
             console.log(error);

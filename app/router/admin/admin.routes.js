@@ -1,5 +1,8 @@
 const { BlogRoutes } = require("./blog.routers");
 const { CategoryRoutes } = require("./category.router");
+const {
+    VerifyAccessToken,
+} = require("../../http/middlewares/VerifyAccessToken");
 
 const router = require("express").Router();
 
@@ -12,7 +15,7 @@ const router = require("express").Router();
  *          description: CRUD op for category
  */
 router.use("/category", CategoryRoutes);
-router.use("/blogs", BlogRoutes);
+router.use("/blogs", VerifyAccessToken, BlogRoutes);
 
 module.exports = {
     AdminRoutes: router,
