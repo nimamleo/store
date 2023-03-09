@@ -6,6 +6,8 @@ const {
     REFRESH_TOKEN_SECRET_KEY,
 } = require("./constant");
 const redisClient = require("./init-redis");
+const path = require("path");
+const fs = require("fs");
 
 function randomNumberGenerator() {
     return Math.floor(Math.random() * 90000 + 10000);
@@ -53,8 +55,14 @@ function SignRefreshToken(userId) {
     });
 }
 
+function deleteFileInPublic(fileAddress) {
+    const pathFile = path.join(__dirname, "..", "..", "public", fileAddress);
+    fs.unlinkSync(pathFile);
+}
+
 module.exports = {
     randomNumberGenerator,
     SignAccessToken,
     SignRefreshToken,
+    deleteFileInPublic,
 };

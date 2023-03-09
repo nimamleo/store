@@ -11,7 +11,14 @@ const addCategorySchema = Joi.object({
         .allow("")
         .error(new Error("id is not valid")),
 });
+const updateCategorySchema = Joi.object({
+    title: Joi.string()
+        .min(3)
+        .max(30)
+        .error(new Error("category title is not valid")),
+});
 
 module.exports = {
     addCategorySchema,
+    updateCategorySchema,
 };
