@@ -5,7 +5,7 @@ const Controller = require("../controller");
 module.exports = new (class HomeController extends Controller {
     async indexPage(req, res, next) {
         try {
-            return res.status(200).send("index page store");
+            return res.status(httpStatus.OK).send("index page store");
         } catch (err) {
             next(err);
         }

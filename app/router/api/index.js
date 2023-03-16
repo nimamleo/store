@@ -24,7 +24,7 @@ const router = require("express").Router();
  *              name: access-token
  *              example: Bearer yourToken....
  *      responses:
- *          200:
+ *          httpStatus.OK:
  *              description: success
  *              schema:
  *                  type: string

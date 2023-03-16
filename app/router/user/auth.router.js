@@ -3,6 +3,41 @@ const {
 } = require("../../http/controllers/user/auth/auth.controller");
 
 const router = require("express").Router();
+
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          GetOTP:
+ *              type: object
+ *              required:
+ *                  -   mobile
+ *              properties:
+ *                  mobile:
+ *                      type: string
+ *                      description: the user mobile for signup/signin
+ *          CheckOTP:
+ *              type: object
+ *              required:
+ *                  -   mobile
+ *                  -   code
+ *              properties:
+ *                  mobile:
+ *                      type: string
+ *                      description: the user mobile for signup/signin
+ *                  code:
+ *                      type: integer
+ *                      description: reviced code from getOTP
+ *          RefreshToken:
+ *              type: object
+ *              required:
+ *                  -   refreshToken
+ *              properties:
+ *                  refreshToken:
+ *                      type: string
+ *                      description: enter refresh-token for get fresh token and refresh-token
+ */
+
 /**
  * @swagger
  *  tags:
@@ -18,14 +53,18 @@ const router = require("express").Router();
  *          tags: [User-Authentication]
  *          summary: login user in userpanel with phone number
  *          description: one time password(OTP) login
- *          parameters:
- *          -   name: mobile
- *              description: fa-IRI phonenumber
- *              in: formData
+ *          requestBody:
  *              required: true
- *              type: string
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/GetOTP'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/GetOTP'
+ *
  *          responses:
- *              201:
+ *              httpStatus.CREATED:
  *                  description: success
  *              400:
  *                  description: Bad Request
@@ -43,19 +82,17 @@ router.post("/get-otp", UserAuthController.getOtp);
  *          tags: [User-Authentication]
  *          summary: check-otp value in user controller
  *          description: check otp with code-mobile expires date
- *          parameters:
- *          -   name: mobile
- *              description: fa-IRI phonenumber
- *              in: formData
+ *          requestBody:
  *              required: true
- *              type: string
- *          -   name: code
- *              description: enter sms code recived
- *              in: formData
- *              required: true
- *              type: string
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CheckOTP'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/CheckOTP'
  *          responses:
- *              201:
+ *              httpStatus.CREATED:
  *                  description: success
  *              400:
  *                  description: Bad Request
@@ -73,13 +110,18 @@ router.post("/check-otp", UserAuthController.checkOtp);
  *          tags: [User-Authentication]
  *          summary: send refresh token for get new token and refresh token
  *          description: fresh token
- *          parameters:
- *          -   name: refreshToken
- *              in: formData
+ *          requestBody:
  *              required: true
- *              type: string
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/RefreshToken'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/RefreshToken'
+ *
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.post("/refresh-token", UserAuthController.refreshToken);

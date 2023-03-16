@@ -1,11 +1,7 @@
 const { default: mongoose } = require("mongoose");
+const { commentSchema } = require("./comments.schema");
 
-const commentSchema = new mongoose.Schema({
-    user: { type: mongoose.Types.ObjectId, ref: "user", required: true },
-    comment: { type: String, required: true },
-    createdAt: { type: Date, default: new Date().getTime() },
-    parent: { type: mongoose.Types.ObjectId },
-});
+
 
 const Schema = new mongoose.Schema(
     {

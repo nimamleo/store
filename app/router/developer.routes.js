@@ -21,7 +21,7 @@ const { randomNumberGenerator } = require("../utils/functions");
  *                  name: password
  *                  required : true
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 
@@ -37,7 +37,7 @@ router.get("/password-hash/:password", (req, res, next) => {
  *          tags: [Developer-Routes]
  *          summary: get random number
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 

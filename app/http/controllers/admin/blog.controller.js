@@ -16,8 +16,8 @@ class BlogController extends Controller {
                 .join(blogDataBody.fileUploadPath, blogDataBody.fileName)
                 .split("\\")
                 .join("/");
-            const { title, text, short_text, category, tags } = blogDataBody;
             const image = req.body.image;
+            const { title, text, short_text, category, tags } = blogDataBody;
             const author = req.user._id;
             const blog = await BlogModel.create({
                 title,
@@ -28,9 +28,9 @@ class BlogController extends Controller {
                 tags,
                 author,
             });
-            return res.status(201).json({
+            return res.status(httpStatus.CREATED).json({
                 message: "blog created successfully",
-                statusCode: 201,
+                statusCode: httpStatus.CREATED,
                 data: {
                     blog,
                 },
@@ -44,8 +44,8 @@ class BlogController extends Controller {
         try {
             const { id } = req.params;
             const blog = await this.findBlog(id);
-            res.status(200).json({
-                statusCode: 200,
+            res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 data: { blog },
             });
         } catch (err) {
@@ -92,8 +92,8 @@ class BlogController extends Controller {
                     },
                 },
             ]);
-            res.status(200).json({
-                stausCode: 200,
+            res.status(httpStatus.OK).json({
+                stausCode: httpStatus.OK,
                 data: {
                     blogs,
                 },
@@ -115,8 +115,8 @@ class BlogController extends Controller {
             const deleteResult = await BlogModel.deleteOne({ _id: id });
             if (deleteResult.deletedCount == 0)
                 throw createHttpError.InternalServerError("can not delete");
-            return res.status(200).json({
-                statusCode: 200,
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 message: "blog deleted",
             });
         } catch (err) {
@@ -155,8 +155,8 @@ class BlogController extends Controller {
             );
             if (updateResult.modifiedCount == 0)
                 throw createHttpError.InternalServerError("update failed");
-            res.status(200).json({
-                statusCode: 200,
+            res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 message: "blog updated",
             });
         } catch (err) {

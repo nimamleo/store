@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
 const createHttpError = require("http-errors");
+const path = require("path");
 const { UserModel } = require("../models/users.model");
 const {
     ACCESS_TOKEN_SECRET_KEY,
     REFRESH_TOKEN_SECRET_KEY,
 } = require("./constant");
 const redisClient = require("./init-redis");
-const path = require("path");
 const fs = require("fs");
 
 function randomNumberGenerator() {
@@ -90,10 +90,21 @@ function deleteFileInPublic(fileAddress = "null.png") {
     }
 }
 
+function ListOfImagesFromRequest(files, fileUploadPath) {
+    if (files?.length > 0) {
+        return files
+            .map((file) => path.join(fileUploadPath, file.filename))
+            .map((item) => item.split("\\").join("/"));
+    } else {
+        return [];
+    }
+}
+
 module.exports = {
     randomNumberGenerator,
     SignAccessToken,
     SignRefreshToken,
     deleteFileInPublic,
     VerifyRefreshToken,
+    ListOfImagesFromRequest,
 };

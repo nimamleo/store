@@ -34,6 +34,7 @@ module.exports = class Application {
             swaggerUI.setup(
                 swaggerJsDoc({
                     swaggerDefinition: {
+                        openapi: "3.0.0",
                         info: {
                             title: "my store",
                             version: "1.0.0",
@@ -50,9 +51,22 @@ module.exports = class Application {
                                 url: "http://127.0.0.1:4000",
                             },
                         ],
+                        components: {
+                            securitySchemes: {
+                                BearerAuth: {
+                                    type: "http",
+                                    scheme: "bearer",
+                                    bearerFormat: "JWT",
+                                },
+                            },
+                        },
+                        security: [{ BearerAuth: [] }],
                     },
                     apis: ["./app/router/**/*.js"],
-                })
+                }),
+                {
+                    explorer: true,
+                }
             )
         );
     }

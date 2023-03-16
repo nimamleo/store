@@ -17,9 +17,9 @@ class CategoryController extends Controller {
                 throw createHttpError.InternalServerError(
                     "internall server error"
                 );
-            return res.status(201).json({
+            return res.status(httpStatus.CREATED).json({
                 data: {
-                    statusCode: 201,
+                    statusCode: httpStatus.CREATED,
                     message: "category successfully added",
                 },
             });
@@ -38,8 +38,8 @@ class CategoryController extends Controller {
                 throw createHttpError.InternalServerError(
                     "can not remove category"
                 );
-            return res.status(200).json({
-                statusCode: 200,
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 data: {
                     message: "category removed",
                 },
@@ -60,8 +60,8 @@ class CategoryController extends Controller {
             );
             if (updateResult.modifiedCount == 0)
                 throw createHttpError.InternalServerError("can not update");
-            return res.status(200).json({
-                statusCode: 200,
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 message: "update successfully done",
             });
         } catch (err) {
@@ -71,7 +71,7 @@ class CategoryController extends Controller {
     async getAllcategoryWithoutPopulate(req, res, next) {
         try {
             const catogories = await CategoryModel.aggregate([{ $match: {} }]);
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: { catogories },
             });
         } catch (err) {
@@ -127,9 +127,9 @@ class CategoryController extends Controller {
                 { parent: undefined },
                 { __v: 0 }
             );
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: {
-                    statusCode: 200,
+                    statusCode: httpStatus.OK,
                     categories,
                 },
             });
@@ -160,7 +160,7 @@ class CategoryController extends Controller {
                     },
                 },
             ]);
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: { category },
             });
         } catch (err) {
@@ -175,9 +175,9 @@ class CategoryController extends Controller {
             );
             if (!parents)
                 throw createHttpError.NotFound("there is no category");
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: {
-                    statusCode: 200,
+                    statusCode: httpStatus.OK,
                     parents,
                 },
             });
@@ -196,9 +196,9 @@ class CategoryController extends Controller {
                 throw createHttpError.NotFound(
                     "we can not find sub categories"
                 );
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: {
-                    statusCode: 200,
+                    statusCode: httpStatus.OK,
                     children,
                 },
             });

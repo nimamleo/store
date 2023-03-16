@@ -6,33 +6,55 @@ const router = require("express").Router();
 
 /**
  * @swagger
+ *  components:
+ *      schemas:
+ *          Category:
+ *              type: object
+ *              required:
+ *                  -   title
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of category
+ *                  parent:
+ *                      type: string
+ *                      description: the title of category
+ */
+
+/**
+ * @swagger
  *  /admin/category/add:
  *      post:
- *          tags: [Category(Admin-Panel)]
+ *          tags: [Category(AdminPanel)]
  *          summary: create new category title
- *          parameters:
- *              -   in: formData
- *                  type: string
- *                  required: true
- *                  name: title
- *              -   in: formData
- *                  type: string
- *                  required: false
- *                  name: parent
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
  *          responses:
- *              201:
+ *              httpStatus.CREATED:
  *                  description: success
  */
 router.post("/add", CategoryController.addCategory);
 
 /**
  * @swagger
- *  /admin/category/parents:
+ *  /admin/category/children/{parent}:
  *      get:
- *          tags: [Category(Admin-Panel)]
- *          summary: get all parents of category heads
+ *          tags: [Category(AdminPanel)]
+ *          summary: get All children of Parents Category
+ *          parameters:
+ *              -   in: path
+ *                  name: parent
+ *                  type: string
+ *                  required: true
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.get("/parents", CategoryController.getAllParents);
@@ -48,7 +70,7 @@ router.get("/parents", CategoryController.getAllParents);
  *                  type: string
  *                  required: true
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.get("/children/:parent", CategoryController.getChildOfParents);
@@ -56,10 +78,10 @@ router.get("/children/:parent", CategoryController.getChildOfParents);
  * @swagger
  *  /admin/category/all:
  *      get:
- *          tags: [Category(Admin-Panel)]
- *          summary: get all categories
+ *          tags: [Category(AdminPanel)]
+ *          summary: get All Categories
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.get("/all", CategoryController.getAllCategory);
@@ -67,7 +89,7 @@ router.get("/all", CategoryController.getAllCategory);
  * @swagger
  *  /admin/category/remove/{id}:
  *      delete:
- *          tags: [Category(Admin-Panel)]
+ *          tags: [Category(AdminPanel)]
  *          summary: remove category with object-id
  *          parameters:
  *              -   in: path
@@ -75,7 +97,7 @@ router.get("/all", CategoryController.getAllCategory);
  *                  type: string
  *                  required : true
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.delete("/remove/:id", CategoryController.removeCategory);
@@ -83,10 +105,10 @@ router.delete("/remove/:id", CategoryController.removeCategory);
  * @swagger
  *  /admin/category/list-of-all:
  *      get:
- *          tags: [Category(Admin-Panel)]
- *          summary: get all category with out using populate and snested structure
+ *          tags: [Category(AdminPanel)]
+ *          summary: get all categories without populate and nested structure
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.get("/list-of-all", CategoryController.getAllcategoryWithoutPopulate);
@@ -102,7 +124,7 @@ router.get("/list-of-all", CategoryController.getAllcategoryWithoutPopulate);
  *                  type: string
  *                  required : true
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  */
 router.get("/:id", CategoryController.getCategoryById);
@@ -110,25 +132,30 @@ router.get("/:id", CategoryController.getCategoryById);
  * @swagger
  *  /admin/category/update/{id}:
  *      patch:
- *          tags: [Category(Admin-Panel)]
- *          summary: update category
+ *          tags: [Category(AdminPanel)]
+ *          summary: edit or update category title with object id
  *          parameters:
  *              -   in: path
  *                  name: id
  *                  type: string
  *                  required : true
- *              -   in: formData
- *                  name: title
- *                  type: string
- *                  required : true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
  *          responses:
- *              200:
+ *              httpStatus.OK:
  *                  description: success
  *              500:
- *                  description: internallServerError
+ *                  description: internalServerErorr
  */
 router.patch("/update/:id", CategoryController.editCategory);
 
 module.exports = {
-    CategoryRoutes: router,
+    AdminApiCategoryRouter: router,
 };
