@@ -1,11 +1,11 @@
-const Controller = require(".././controller");
+const Controller = require("../../controller");
 const {
     addBlogSchema,
     // updateCategorySchema,
-} = require("../../validators/admin/blog.schema");
+} = require("../../../validators/admin/blog.schema");
 const path = require("path");
-const { BlogModel } = require("../../../models/blog.model");
-const { deleteFileInPublic } = require("../../../utils/functions");
+const { BlogModel } = require("../../../../models/blog.model");
+const { deleteFileInPublic } = require("../../../../utils/functions");
 const createHttpError = require("http-errors");
 
 class BlogController extends Controller {
@@ -145,7 +145,7 @@ class BlogController extends Controller {
             Object.keys(data).forEach((key) => {
                 if (blackListData.includes(data[key])) delete data[key];
                 if (typeof data[key] == "string") data[key] = data[key].trim();
-                if (Array.isArray(data[key]) && Array.length > 0)
+                if (Array.isArray(data[key]) && data[key].length > 0)
                     data[key] = data[key].map((item) => item.trim());
                 if (nullishData.includes(data[key])) delete data[key];
             });

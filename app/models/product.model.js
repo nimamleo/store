@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const { commentSchema } = require("./comments.schema");
+const { commentSchema } = require("../models/comments.model");
 
 const Schema = new mongoose.Schema({
     title: { type: String, required: true },
@@ -22,7 +22,7 @@ const Schema = new mongoose.Schema({
     type: { type: String, required: true },
     format: { type: String },
     supplier: { type: mongoose.Types.ObjectId, required: true },
-    feture: {
+    features: {
         type: Object,
         default: {
             length: "",

@@ -20,7 +20,7 @@ function SignAccessToken(userId) {
             mobile: user.mobile,
         };
         const options = {
-            expiresIn: "1h",
+            expiresIn: "4h",
         };
         jwt.sign(payload, ACCESS_TOKEN_SECRET_KEY, options, (err, token) => {
             if (err)
@@ -100,6 +100,51 @@ function ListOfImagesFromRequest(files, fileUploadPath) {
     }
 }
 
+function copyObject(object) {
+    return JSON.parse(JSON.stringify(object));
+}
+
+function setFeatures(body) {
+    const { width, height, weight, length, colors } = body;
+    let features = {},
+        type = "physical";
+    features.colors = colors;
+    if (
+        !isNaN(+width) ||
+        !isNaN(+height) ||
+        !isNaN(+weight) ||
+        !isNaN(+length)
+    ) {
+        if (!width) features.width = 0;
+        else features.width = +width;
+        if (!height) features.height = 0;
+        else features.height = +height;
+        if (!weight) features.weight = 0;
+        else features.weight = +weight;
+        if (!length) features.length = 0;
+        else features.length = +length;
+    } else {
+        type = "virtual";
+    }
+
+    return features;
+}
+
+function deleteinvalidPropertyInObject(
+    data = {},
+    blackListData = [],
+    nullishData = []
+) {
+    Object.keys(data).forEach((key) => {
+        if (blackListData.includes(data[key])) delete data[key];
+        if (typeof data[key] == "string") data[key] = data[key].trim();
+        if (Array.isArray(data[key]) && data[key].length > 0)
+            data[key] = data[key].map((item) => item.trim());
+        if (Array.isArray(data[key]) && data[key].length == 0) delete data[key];
+        if (nullishData.includes(data[key])) delete data[key];
+    });
+}
+
 module.exports = {
     randomNumberGenerator,
     SignAccessToken,
@@ -107,4 +152,7 @@ module.exports = {
     deleteFileInPublic,
     VerifyRefreshToken,
     ListOfImagesFromRequest,
+    copyObject,
+    setFeatures,
+    deleteinvalidPropertyInObject,
 };

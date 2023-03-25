@@ -1,7 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const { commentSchema } = require("./comments.schema");
-
-
+const commentSchema = require("../models/comments.model");
 
 const Schema = new mongoose.Schema(
     {

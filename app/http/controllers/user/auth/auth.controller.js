@@ -12,6 +12,7 @@ const { UserModel } = require("../../../../models/users.model");
 const Controller = require("../../controller");
 const { VerifyRefreshToken } = require("../../../../utils/functions");
 const { ROLES } = require("../../../../utils/constant");
+const { StatusCodes } = require("http-status-codes");
 
 class UserAuthController extends Controller {
     async getOtp(req, res, next) {
@@ -21,9 +22,9 @@ class UserAuthController extends Controller {
             const code = randomNumberGenerator();
             const result = await this.saveUser(mobile, code);
             if (!result) throw createHttpError.Unauthorized("login failed");
-            return res.status(httpStatus.OK).send({
+            return res.status(StatusCodes.OK).send({
                 data: {
-                    statusCode: httpStatus.OK,
+                    statusCode: StatusCodes.OK,
                     message: "OTP code successfully sent",
                     code,
                     mobile,
@@ -74,7 +75,7 @@ class UserAuthController extends Controller {
     async saveUser(mobile, code) {
         let otp = {
             code,
-            expiresIn: new Date().getTime() + 1httpStatus.OK00,
+            expiresIn: new Date().getTime() + 120000,
         };
         const result = await this.checkExistUser(mobile);
         if (result) {

@@ -1,11 +1,39 @@
-const Controller = require("../controller");
-const { addProductSchema } = require("../../validators/admin/product.schema");
-const { ProductModel } = require("../../../models/product.model");
+const Controller = require("../../controller");
+const { addProductSchema } = require("../../../validators/admin/product.schema");
+const { ProductModel } = require("../../../../models/product.model");
 const path = require("path");
-const { ListOfImagesFromRequest } = require("../../../utils/functions");
-const { ObjectIdValidator } = require("../../validators/public.validator");
+const {
+    ListOfImagesFromRequest,
+    copyObject,
+    setFeatures,
+    deleteinvalidPropertyInObject,
+} = require("../../../../utils/functions");
+const { ObjectIdValidator } = require("../../../validators/public.validator");
 const createHttpError = require("http-errors");
 const { StatusCodes: httpStatus } = require("http-status-codes");
+const ProductBlackList = {
+    BOOKMARKS: "bookmarks",
+    LIKES: "likes",
+    DISLIKES: "dislikes",
+    COMMENTS: "comments",
+    SUPPLIER: "supplier",
+    WEIGHT: "weight",
+    WIDTH: "width",
+    LENGTH: "length",
+    HEIGHT: "height",
+    COLORS: "colors",
+};
+Object.freeze(ProductBlackList);
+
+const nullishList = {
+    EMPTY: "",
+    WHITESPACE: " ",
+    UNDEFINED: undefined,
+    NULL: null,
+    NAN: NaN,
+    ZERO: 0,
+};
+Object.freeze(nullishList);
 
 class ProductController extends Controller {
     async addProduct(req, res, next) {
@@ -24,33 +52,10 @@ class ProductController extends Controller {
                 count,
                 price,
                 discount,
-                width,
-                height,
-                weight,
-                length,
             } = productBody;
             const supplier = req.user._id;
 
-            let feture = {},
-                type = "physical";
-            if (
-                !isNaN(+width) ||
-                !isNaN(+height) ||
-                !isNaN(+weight) ||
-                !isNaN(+length)
-            ) {
-                if (!width) feture.width = 0;
-                else feture.width = +width;
-                if (!height) feture.height = 0;
-                else feture.height = +height;
-                if (!weight) feture.weight = 0;
-                else feture.weight = +weight;
-                if (!length) feture.length = 0;
-                else feture.length = +length;
-            } else {
-                type = "virtual";
-            }
-            console.log(feture);
+            let features = setFeatures(req.body);
 
             const product = await ProductModel.create({
                 title,
@@ -62,7 +67,7 @@ class ProductController extends Controller {
                 price,
                 discount,
                 images,
-                feture,
+                features,
                 supplier,
                 type,
             });
@@ -80,8 +85,32 @@ class ProductController extends Controller {
     }
     async editProduct(req, res, next) {
         try {
+            const { id } = req.params;
+            const product = await this.findProduct(id);
+            const data = copyObject(req.body);
+            data.images = ListOfImagesFromRequest(
+                req?.files || [],
+                req.body.fileUploadPath
+            );
+            data.features = setFeatures(req.body);
+            const blackListData = Object.values(ProductBlackList);
+            const nulishData = Object.values(nullishList);
+            deleteinvalidPropertyInObject(data, blackListData, nulishData);
+
+            const updateResult = await ProductModel.updateOne(
+                { _id: product._id },
+                { $set: data }
+            );
+            if (updateResult.modifiedCount == 0) {
+                throw createHttpError.InternalServerError(
+                    "product update failed"
+                );
+            }
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                message: "product updated",
+            }); 
         } catch (err) {
-            deleteFileInPublic(req.body.image);
             next(err);
         }
     }

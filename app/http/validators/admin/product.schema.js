@@ -4,7 +4,7 @@ const addProductSchema = Joi.object({
     title: Joi.string().min(3).max(30),
     text: Joi.string(),
     short_text: Joi.string(),
-    tags: Joi.array().min(0).max(httpStatus.OK),
+    tags: Joi.array().min(0).max(20),
     category: Joi.string().regex(MongoIDPattern),
     price: Joi.number(),
     discount: Joi.number(),
