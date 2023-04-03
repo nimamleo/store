@@ -39,9 +39,8 @@
  *      get:
  *          tags: [Blog(AdminPanel)]
  *          summary: get all blogs
- *          parameters:
  *          responses:
- *              httpStatus.OK:
+ *              200:
  *                  description: success
  */
 /**
@@ -81,7 +80,7 @@
  *                      schema:
  *                          $ref: '#/components/schemas/Blog'
  *          responses:
- *              httpStatus.CREATED:
+ *              201:
  *                  description: created
  */
 /**

@@ -5,17 +5,17 @@
  *          AddEpisode:
  *              type: object
  *              required:
- *                  -   courseID
- *                  -   chapterID
+ *                  -   courseId
+ *                  -   chapterId
  *                  -   title       
  *                  -   text       
  *                  -   video       
  *                  -   type       
  *              properties:
- *                  courseID:
+ *                  courseId:
  *                      type: string
  *                      example: 62822e4ff68cdded54aa928d
- *                  chapterID: 
+ *                  chapterId: 
  *                      type: string
  *                      example: 628dd482330688179ab88203
  *                  title:
@@ -119,13 +119,13 @@
  */
 /**
  * @swagger
- *  /admin/episode/update/{episodeID}:
+ *  /admin/episode/update/{episodeId}:
  *      patch:
  *          tags: [Episode(AdminPanel)]
  *          summary: edit episode of chapter
  *          parameters:
  *              -   in: path
- *                  name: episodeID
+ *                  name: episodeId
  *                  type: string
  *                  required: true
  *          requestBody:

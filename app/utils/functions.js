@@ -136,7 +136,10 @@ function deleteinvalidPropertyInObject(
     nullishData = []
 ) {
     Object.keys(data).forEach((key) => {
-        if (blackListData.includes(data[key])) delete data[key];
+        if (blackListData.includes(data[key])) {
+            console.log(key);
+            delete data[key];
+        }
         if (typeof data[key] == "string") data[key] = data[key].trim();
         if (Array.isArray(data[key]) && data[key].length > 0)
             data[key] = data[key].map((item) => item.trim());
@@ -145,6 +148,28 @@ function deleteinvalidPropertyInObject(
     });
 }
 
+function getTime(seconds) {
+    return new Date(seconds * 1000).toISOString().substring(11, 19);
+}
+
+function getTimeOfCourse(chapters = []) {
+    let time,
+        second = 0;
+    for (const chapter of chapters) {
+        for (const episode of chapter.episodes) {
+            if (episode?.time) {
+                [hour, min, sec] = episode.time.split(":");
+                hour = hour * 3600;
+                min = min * 60;
+                second += +hour + min + +sec;
+                time = getTime(second);
+            } else {
+                time = "00:00:00";
+            }
+        }
+    }
+    return time;
+}
 module.exports = {
     randomNumberGenerator,
     SignAccessToken,
@@ -155,4 +180,6 @@ module.exports = {
     copyObject,
     setFeatures,
     deleteinvalidPropertyInObject,
+    getTime,
+    getTimeOfCourse,
 };

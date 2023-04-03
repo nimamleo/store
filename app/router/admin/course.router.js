@@ -17,6 +17,13 @@ router.post(
     CourseController.addCourse
 );
 
+router.patch(
+    "/update/:id",
+    uploadFile.single("image", 10),
+    stringToArray("tags"),
+    CourseController.updateCourse
+);
+
 
 module.exports = {
     AdminApiCourseRouter: router,

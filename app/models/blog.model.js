@@ -24,11 +24,11 @@ const Schema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true,
-        versionkey: false,
         toJSON: {
             virtuals: true,
         },
+        timestamps: true,
+        versionkey: false,
     }
 );
 
@@ -42,6 +42,10 @@ Schema.virtual("category_detail", {
     localField: "_id",
     foreignField: "category",
 });
+
+Schema.virtual("imageURL").get(function(){
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`
+})
 
 module.exports = {
     BlogModel: mongoose.model("blog", Schema),

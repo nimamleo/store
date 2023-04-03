@@ -6,6 +6,7 @@ const { AllRoutes } = require("./router/router");
 const createHttpError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+require('dotenv').config();
 const cors = require("cors");
 
 module.exports = class Application {
@@ -23,6 +24,7 @@ module.exports = class Application {
         this.errorHandling();
     }
     configApplication() {
+
         this.#app.use(cors());
         this.#app.use(morgan("dev"));
         this.#app.use(express.json());

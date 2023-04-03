@@ -2,6 +2,11 @@ const { CoursesModel } = require("../../../../models/cource.model");
 const Controller = require("../../controller");
 const { StatusCodes } = require("http-status-codes");
 const { addCourseSchema } = require("../../../validators/admin/course.schema");
+const {
+    deleteinvalidPropertyInObject,
+    deleteFileInPublic,
+    getTimeOfCourse,
+} = require("../../../../utils/functions");
 const path = require("path");
 const createHttpError = require("http-errors");
 const { default: mongoose } = require("mongoose");
@@ -116,6 +121,48 @@ class CourseController extends Controller {
         }
     }
 
+    async updateCourse(req, res, next) {
+        try {
+            const { id: courseId } = req.params;
+            const course = await this.findCourse(courseId);
+            const data = req.body;
+            const { fileName, fileUploadPath } = req.body;
+            if (req.file) {
+                data.image = path.join(fileUploadPath, fileName);
+                deleteFileInPublic(course.image);
+            }
+            const CourseBlackList = [
+                "time",
+                "chapters",
+                "episodes",
+                "student",
+                "bookmarks",
+                "likes",
+                "dislikes",
+                "comments ",
+                "fileName",
+                "fileUploadPath",
+            ];
+            if (data.price > 0) data.type = "price";
+            else data.type = "free";
+            const nulishList = [0, "", " ", undefined, null, NaN];
+            deleteinvalidPropertyInObject(data, CourseBlackList, nulishList);
+            const updatedCourseResult = await CoursesModel.updateOne(
+                { _id: courseId },
+                { $set: data }
+            );
+            if (updatedCourseResult.modifiedCount == 0)
+                throw createHttpError.InternalServerError(
+                    "course update failed"
+                );
+            return res.status(StatusCodes.OK).json({
+                message: "course updated",
+                statusCode: StatusCodes.OK,
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
     async findCourse(id) {
         if (!mongoose.isValidObjectId(id))
             throw createHttpError.BadRequest("id is not valid");
@@ -123,18 +170,6 @@ class CourseController extends Controller {
         if (!course) throw createHttpError.NotFound("course not found");
         return course;
     }
-    // getListOfProduct(req, res, next) {
-    //     try {
-    //     } catch (err) {
-    //         next(err);
-    //     }
-    // }
-    // getListOfProduct(req, res, next) {
-    //     try {
-    //     } catch (err) {
-    //         next(err);
-    //     }
-    // }
     // getListOfProduct(req, res, next) {
     //     try {
     //     } catch (err) {

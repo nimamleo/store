@@ -7,6 +7,7 @@ const path = require("path");
 const { BlogModel } = require("../../../../models/blog.model");
 const { deleteFileInPublic } = require("../../../../utils/functions");
 const createHttpError = require("http-errors");
+const { StatusCodes } = require("http-status-codes");
 
 class BlogController extends Controller {
     async createBlog(req, res, next) {
@@ -92,8 +93,8 @@ class BlogController extends Controller {
                     },
                 },
             ]);
-            res.status(httpStatus.OK).json({
-                stausCode: httpStatus.OK,
+            res.status(StatusCodes.OK).json({
+                stausCode: StatusCodes.OK,
                 data: {
                     blogs,
                 },

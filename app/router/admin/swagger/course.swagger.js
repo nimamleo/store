@@ -15,8 +15,6 @@
  *                  -   false
  */
 
-
-
 /**
  * @swagger
  *  components:
@@ -36,8 +34,8 @@
  *                  text:
  *                      type: string
  *                      example: the describe about this chapter
- * 
- * 
+ *
+ *
  *          Insert-Course:
  *              type: object
  *              required:
@@ -140,7 +138,7 @@
  *      ListOfCourses:
  *          type: object
  *          properties:
- *              statusCode: 
+ *              statusCode:
  *                  type: integer
  *                  example: 200
  *              data:
@@ -183,8 +181,6 @@
  *                                      example: "erfan yousefi"
  */
 
-
-
 /**
  * @swagger
  *  /admin/courses/list:
@@ -215,7 +211,7 @@
  *              -   in: path
  *                  type: string
  *                  name: id
- *                  description: course id 
+ *                  description: course id
  *          responses:
  *              200:
  *                  description: success
@@ -233,6 +229,33 @@
  *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#/components/schemas/Insert-Course'
+ *
+ *          responses:
+ *              201:
+ *                  description: created new course
+ *                  content:
+ *                      application/json:
+ *                              schema:
+ *                                  $ref: '#/definitions/publicDefinition'
+ */
+
+/**
+ * @swagger
+ *  /admin/courses/update/{id}:
+ *      patch:
+ *          tags: [Course(AdminPanel)]
+ *          summary: create and save course
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Edit-Course'
  *
  *          responses:
  *              201:

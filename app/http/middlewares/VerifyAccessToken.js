@@ -42,7 +42,7 @@ function checkRole(role) {
             const user = req.user;
             if (user.roles.includes(role)) return next();
             throw createHttpError.Forbidden(
-                "you don't have to this page access"
+                "you don't access have to this page access"
             );
         };
     } catch (err) {

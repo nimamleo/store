@@ -21,7 +21,7 @@ const addEpisodeSchema = Joi.object({
     chapterId: Joi.string().regex(MongoIDPattern),
     courseId: Joi.string().regex(MongoIDPattern),
 
-    fileName: Joi.string().pattern(/(\.png|\.jpg|\.webp|\.jpeg|\.gif)$/),
+    fileName: Joi.string().pattern(/(\.mp4|\.mkv|\.mov|\.mpg|\.avi)$/),
     fileUploadPath: Joi.allow(),
 });
 
