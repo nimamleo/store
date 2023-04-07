@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const { commentSchema } = require("../models/comments.model");
+const { CommentSchema } = require("./public.schema");
 const { getTime, getTimeOfCourse } = require("../utils/functions");
 
 const Episodes = mongoose.Schema(
@@ -36,7 +36,7 @@ const Schema = new mongoose.Schema(
             ref: "category",
             required: true,
         },
-        comments: { type: [commentSchema], default: [] },
+        comments: { type: [CommentSchema], default: [] },
         likes: { type: [mongoose.Types.ObjectId], default: [] },
         dislikes: { type: [mongoose.Types.ObjectId], default: [] },
         bookmarks: { type: [mongoose.Types.ObjectId], default: [] },
@@ -60,9 +60,9 @@ Schema.virtual("imageUrl").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`;
 });
 Schema.virtual("totalTime").get(function () {
-    return getTimeOfCourse(this.chapters)
+    return getTimeOfCourse(this.chapters);
 });
 
 module.exports = {
-    CoursesModel: mongoose.model("course", Schema),
+    CourseModel: mongoose.model("course", Schema),
 };

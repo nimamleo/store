@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const commentSchema = require("../models/comments.model");
+const { CommentSchema } = require("./public.schema");
 
 const Schema = new mongoose.Schema(
     {
@@ -14,7 +14,6 @@ const Schema = new mongoose.Schema(
             ref: "category",
             required: true,
         },
-        comments: { type: [commentSchema], default: [] },
         likes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
         disLikes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
         bookMarks: {
@@ -22,6 +21,7 @@ const Schema = new mongoose.Schema(
             ref: "user",
             default: [],
         },
+        comments: { type: [CommentSchema], default: [] },
     },
     {
         toJSON: {
@@ -37,15 +37,16 @@ Schema.virtual("user", {
     localField: "_id",
     foreignField: "author",
 });
+
 Schema.virtual("category_detail", {
     ref: "category",
     localField: "_id",
     foreignField: "category",
 });
 
-Schema.virtual("imageURL").get(function(){
-    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`
-})
+Schema.virtual("imageURL").get(function () {
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`;
+});
 
 module.exports = {
     BlogModel: mongoose.model("blog", Schema),

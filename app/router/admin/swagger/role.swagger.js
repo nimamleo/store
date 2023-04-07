@@ -41,55 +41,6 @@
  *                                                  example: "describe the permission"
  *                                          
  */
-// /**
-//  * @swagger
-//  *  definitions:
-//  *      ListOfRoles:
-//  *          type: object
-//  *          properties:
-//  *              statusCode: 
-//  *                  type: integer
-//  *                  example: 200
-//  *              data:
-//  *                  type: object
-//  *                  properties:
-//  *                      role:
-//  *                          type: array
-//  *                          items:
-//  *                              type: object
-//  *                              properties:
-//  *                                  _id:
-//  *                                      type: string
-//  *                                      example: "62822e4ff68cdded54aa928d"
-//  *                                  title:
-//  *                                      type: string
-//  *                                      example: "title of role"
-//  *                                  description:
-//  *                                      type: string
-//  *                                      example: "desc of role"
-//  *                                  permission:
-//  *                                      type: array
-//  *                                      items:
-//  *                                          type: object
-//  *                                          properties:
-//  *                                              _id:
-//  *                                                  type: string
-//  *                                                  example: "62822e4ff68cdded54aa928d"
-//  *                                              title:
-//  *                                                  type: string
-//  *                                                  example: "title of permission"
-//  *                                              description:
-//  *                                                  type: string
-//  *                                                  example: "describe the permission"
-//  *                                          
-//  */
-
-
-
-
-
-
-
 /**
  * @swagger
  *  components:
@@ -110,8 +61,38 @@
  *                      type: array
  *                      description: the permissionsID for role
  */
-
-
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          Edit-Role:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of role
+ *                  description:
+ *                      type: string
+ *                      description: the desc of role
+ *                  permissions:
+ *                      type: array
+ *                      description: the permissionsID for role
+ */
+/**
+ * @swagger
+ *  /admin/role/list:
+ *      get:
+ *          tags: [RBAC(AdminPanel)]
+ *          summary: get all Role      
+ *          responses:
+ *              200:
+ *                  description: get all Role
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/ListOfRoles'
+ * 
+ */
 /**
  * @swagger
  *  /admin/role/add:
@@ -134,21 +115,6 @@
  *                              $ref: '#/definitions/publicDefinition'
  * 
  */
-
-/**
- * @swagger
- *  components:
- *      schemas:
- *          Edit-Role:
- *              type: object
- *              properties:
- *                  title:
- *                      type: string
- *                      description: the title of role
- *                  permissions:
- *                     $ref: '#/components/schemas/Persmissions'
- */
-
 /**
  * @swagger
  *  /admin/role/update/{id}:
@@ -176,25 +142,6 @@
  *                              $ref: '#/definitions/publicDefinition'
  * 
  */
-
-
-/**
- * @swagger
- *  /admin/role/list:
- *      get:
- *          tags: [RBAC(AdminPanel)]
- *          summary: get all Role      
- *          responses:
- *              200:
- *                  description: get all Role
- *                  content:
- *                      application/json:
- *                          schema:
- *                              $ref: '#/definitions/ListOfRoles'
- * 
- */
-
-
 /**
  * @swagger
  *  /admin/role/remove/{field}:

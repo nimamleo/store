@@ -1,0 +1,37 @@
+query getBlogs($categoryId: String) {
+    myData: blogs(category: $categoryId) {
+        ...BlogFields
+    }
+}
+
+fragment BlogFields on BlogType {
+    _id
+    title
+    imageURL
+    text
+    short_text
+    author {
+        _id
+        first_name
+        last_name
+    }
+    category {
+        _id
+        title
+    }
+    comments {
+        comment
+        openToComment
+        createdAt
+        user {
+            first_name
+        }
+        answers {
+            comment
+            createdAt
+            user {
+                first_name
+            }
+        }
+    }
+}

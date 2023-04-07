@@ -1,4 +1,4 @@
-const { CoursesModel } = require("../../../../models/cource.model");
+const { CourseModel } = require("../../../../models/course.model");
 const Controller = require("../../controller");
 const { StatusCodes } = require("http-status-codes");
 const { addCourseSchema } = require("../../../validators/admin/course.schema");
@@ -16,7 +16,7 @@ class CourseController extends Controller {
         const search = req?.query?.search || "";
         let courses;
         if (search) {
-            courses = await CoursesModel.find({
+            courses = await CourseModel.find({
                 $text: {
                     $search: search,
                 },
@@ -35,7 +35,7 @@ class CourseController extends Controller {
                 ])
                 .sort({ _id: -1 });
         } else {
-            courses = await CoursesModel.find({})
+            courses = await CourseModel.find({})
                 .populate([
                     { path: "category", select: { children: 0, parent: 0 } },
                     {
@@ -83,7 +83,7 @@ class CourseController extends Controller {
                 throw createHttpError.BadRequest(
                     "you can not set price for free course"
                 );
-            const course = await CoursesModel.create({
+            const course = await CourseModel.create({
                 title,
                 short_text,
                 text,
@@ -147,7 +147,7 @@ class CourseController extends Controller {
             else data.type = "free";
             const nulishList = [0, "", " ", undefined, null, NaN];
             deleteinvalidPropertyInObject(data, CourseBlackList, nulishList);
-            const updatedCourseResult = await CoursesModel.updateOne(
+            const updatedCourseResult = await CourseModel.updateOne(
                 { _id: courseId },
                 { $set: data }
             );
@@ -166,7 +166,7 @@ class CourseController extends Controller {
     async findCourse(id) {
         if (!mongoose.isValidObjectId(id))
             throw createHttpError.BadRequest("id is not valid");
-        const course = await CoursesModel.findById(id);
+        const course = await CourseModel.findById(id);
         if (!course) throw createHttpError.NotFound("course not found");
         return course;
     }

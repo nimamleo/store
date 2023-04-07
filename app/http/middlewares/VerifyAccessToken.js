@@ -31,26 +31,30 @@ function VerifyAccessToken(req, res, next) {
                 next(err);
             }
         });
+        if (Object.keys(req?.error || {})?.length)
+            throw new createHttpError.Unauthorized();
     } catch (err) {
         next(err);
     }
 }
 
-function checkRole(role) {
+async function VerifyAccessTokenInGraphQL(req, res) {
     try {
-        return function (req, res, next) {
-            const user = req.user;
-            if (user.roles.includes(role)) return next();
-            throw createHttpError.Forbidden(
-                "you don't access have to this page access"
-            );
-        };
+        const token = getToken(req.headers);
+        const { mobile } = jwt.verify(token, ACCESS_TOKEN_SECRET_KEY);
+        const user = await UserModel.findOne(
+            { mobile },
+            { password: 0, otp: 0 }
+        );
+        if (!user) return next(createHttpError.Unauthorized("user not found"));
+        return user
     } catch (err) {
-        next(err);
+        throw createHttpError.Unauthorized();
     }
 }
 
 module.exports = {
     VerifyAccessToken,
-    checkRole,
+    VerifyAccessTokenInGraphQL,
+    getToken,
 };

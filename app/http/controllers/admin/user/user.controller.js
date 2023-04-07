@@ -41,12 +41,25 @@ class UserController extends Controller {
             );
             if (updateResult.modifiedCount == 0)
                 throw createHttpError.BadRequest("update user profile failed");
-            return res
-                .status(StatusCodes.OK)
-                .json({
-                    message: "user profile updated",
-                    statusCode: StatusCodes.OK,
-                });
+            return res.status(StatusCodes.OK).json({
+                message: "user profile updated",
+                statusCode: StatusCodes.OK,
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+    async userProfile(req, res, next) {
+        try {
+            const user = await UserModel.findOne(
+                { _id: req.user._id },
+                { bills: 0, password: 0, otp: 0 }
+            );
+            if (!user) throw createHttpError.NotFound("user not found");
+            return res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                data: { user },
+            });
         } catch (err) {
             next(err);
         }

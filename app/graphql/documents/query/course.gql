@@ -1,0 +1,27 @@
+{
+    courses(category: "") {
+        _id
+        title
+        text
+        imageUrl
+        price
+        status
+        chapters {
+            title
+            episodes {
+                title
+            }
+        }
+        teacher {
+            first_name
+        }
+        comments {
+            _id
+            comment
+            answers {
+                _id
+                comment
+            }
+        }
+    }
+}

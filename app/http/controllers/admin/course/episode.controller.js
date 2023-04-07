@@ -9,7 +9,7 @@ const {
     deleteinvalidPropertyInObject,
     copyObject,
 } = require("../../../../utils/functions");
-const { CoursesModel } = require("../../../../models/cource.model");
+const { CourseModel } = require("../../../../models/course.model");
 const { ObjectIdValidator } = require("../../../validators/public.validator");
 
 const nullishList = {
@@ -47,7 +47,7 @@ class EpisodeController extends Controller {
                 type,
                 videoAddress,
             };
-            const createEpisodeResult = await CoursesModel.updateOne(
+            const createEpisodeResult = await CourseModel.updateOne(
                 { _id: courseId, "chapters._id": chapterId },
                 {
                     $push: {
@@ -70,8 +70,8 @@ class EpisodeController extends Controller {
             const { id: episodeId } = await ObjectIdValidator.validateAsync({
                 id: req.params.episodeId,
             });
-            await this.findEpisode(episodeId)
-            const removeEpisodeResult = await CoursesModel.updateOne(
+            await this.findEpisode(episodeId);
+            const removeEpisodeResult = await CourseModel.updateOne(
                 { "chapters.episodes._id": episodeId },
                 {
                     $pull: {
@@ -119,7 +119,7 @@ class EpisodeController extends Controller {
                 Object.values(nullishList)
             );
             const newEpisode = { ...episode, ...data };
-            const editEpisodeResult = await CoursesModel.updateOne(
+            const editEpisodeResult = await CourseModel.updateOne(
                 { "chapters.episodes._id": episodeId },
                 {
                     $set: { "chapters.$.episodes": newEpisode },
@@ -136,7 +136,7 @@ class EpisodeController extends Controller {
         }
     }
     async findEpisode(episodeId) {
-        const course = await CoursesModel.findOne({
+        const course = await CourseModel.findOne({
             "chapters.episodes._id": episodeId,
         });
         if (!course) throw createHttpError.NotFound("course not found");

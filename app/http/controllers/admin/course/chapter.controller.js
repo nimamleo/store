@@ -1,4 +1,4 @@
-const { CoursesModel } = require("../../../../models/cource.model");
+const { CourseModel } = require("../../../../models/course.model");
 const Controller = require("../../controller");
 const { StatusCodes } = require("http-status-codes");
 const { addCourseSchema } = require("../../../validators/admin/course.schema");
@@ -7,7 +7,8 @@ const createHttpError = require("http-errors");
 const { default: mongoose } = require("mongoose");
 const { CourseController } = require("./course.controller");
 const {
-    deleteInvalidPropertyInObject, deleteinvalidPropertyInObject,
+    deleteInvalidPropertyInObject,
+    deleteinvalidPropertyInObject,
 } = require("../../../../utils/functions");
 
 const ChapterBlackList = {
@@ -30,7 +31,7 @@ class ChapterController extends Controller {
         try {
             const { id, title, text } = req.body;
             await CourseController.findCourse(id);
-            const saveChapterresult = await CoursesModel.updateOne(
+            const saveChapterresult = await CourseModel.updateOne(
                 { _id: id },
                 {
                     $push: {
@@ -71,7 +72,7 @@ class ChapterController extends Controller {
             const { chapterId } = req.params;
             console.log(chapterId);
             await this.getOneChapter(chapterId);
-            const removeChapterResult = await CoursesModel.updateOne(
+            const removeChapterResult = await CourseModel.updateOne(
                 { "chapters._id": chapterId },
                 { $pull: { chapters: { _id: chapterId } } }
             );
@@ -96,9 +97,9 @@ class ChapterController extends Controller {
             deleteinvalidPropertyInObject(
                 data,
                 Object.values(ChapterBlackList),
-                Object.values(nullishList),
+                Object.values(nullishList)
             );
-            const updateChapterResult = await CoursesModel.updateOne(
+            const updateChapterResult = await CourseModel.updateOne(
                 { "chapters._id": chapterId },
                 { $set: { "chapters.$": data } }
             );
@@ -114,7 +115,7 @@ class ChapterController extends Controller {
     }
 
     async getChaptersOfCourse(id) {
-        const chapters = await CoursesModel.findOne(
+        const chapters = await CourseModel.findOne(
             { _id: id },
             { chapters: 1, title: 1 }
         );
@@ -123,7 +124,7 @@ class ChapterController extends Controller {
     }
 
     async getOneChapter(id) {
-        const chapter = await CoursesModel.findOne(
+        const chapter = await CourseModel.findOne(
             { "chapters._id": id },
             { "chapters.$": 1 }
         );

@@ -1,0 +1,30 @@
+{
+    products(category: "") {
+        _id
+        text
+        imagesUrl
+        images
+        text
+        short_text
+        comments {
+            _id
+            comment
+            user {
+                _id
+                first_name
+            }
+        }
+        category {
+            title
+        }
+        supplier {
+            first_name
+        }
+        features {
+            length
+            height
+            width
+            weight
+        }
+    }
+}
