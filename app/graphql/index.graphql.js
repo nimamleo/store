@@ -1,5 +1,6 @@
 const { GraphQLObjectType, GraphQLSchema } = require("graphql");
 const { BlogResolver } = require("./queries/blog.resolver");
+const { StatusCodes } = require("http-status-codes");
 const {
     CategoryResolver,
     CategoryChildResolver,
@@ -9,6 +10,7 @@ const {
     CreateCommentForProduct,
     CreateCommentForCourse,
 } = require("./mutations/comment.resolver");
+const { LikeProduct } = require("./mutations/likes.resolver");
 const { CourseResolver } = require("./queries/course.resolver");
 const { ProductResolver } = require("./queries/product.resolver");
 
@@ -29,6 +31,7 @@ const RootMutation = new GraphQLObjectType({
         CreateCommentForBlog,
         CreateCommentForProduct,
         CreateCommentForCourse,
+        LikeProduct,
     },
 });
 const graphQLSchema = new GraphQLSchema({
