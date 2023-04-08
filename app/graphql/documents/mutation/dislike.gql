@@ -1,0 +1,20 @@
+mutation {
+    DislikeProduct(productId: "6412cd255fc7581fc20817db") {
+        data
+        statusCode
+    }
+}
+
+mutation {
+    DislikeBlog(blogId: "640a2cf946fc230ed3810cc6") {
+        data
+        statusCode
+    }
+}
+
+mutation {
+    DislikeCourse(courseId: "64133fef9b1a42f25933fe0d") {
+        data
+        statusCode
+    }
+}

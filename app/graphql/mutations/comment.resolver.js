@@ -10,6 +10,11 @@ const { ProductModel } = require("../../models/product.model");
 const { CourseModel } = require("../../models/course.model");
 const { copyObject } = require("../../utils/functions");
 const { ResponseType } = require("../typeDefs/public.tpe");
+const {
+    checkExistBlog,
+    checkExistProduct,
+    checkExistCourse,
+} = require("../utils");
 
 const CreateCommentForBlog = {
     type: ResponseType,
@@ -86,7 +91,6 @@ const CreateCommentForProduct = {
     },
     resolve: async (_, args, context) => {
         try {
-            
         } catch (err) {
             console.log(err);
         }
@@ -220,21 +224,7 @@ const CreateCommentForCourse = {
         }
     },
 };
-async function checkExistBlog(id) {
-    const blog = await BlogModel.findById(id);
-    if (!blog) throw createHttpError.NotFound("blog not found");
-    return blog;
-}
-async function checkExistProduct(id) {
-    const product = await ProductModel.findById(id);
-    if (!product) throw createHttpError.NotFound("product not found");
-    return product;
-}
-async function checkExistCourse(id) {
-    const Course = await CourseModel.findById(id);
-    if (!Course) throw createHttpError.NotFound("Course not found");
-    return Course;
-}
+
 async function getComment(model, id) {
     const findedComment = await model.findOne(
         { "comments._id": id },

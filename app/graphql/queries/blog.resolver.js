@@ -16,6 +16,9 @@ const BlogResolver = {
             "category",
             "comments.user",
             "comments.answers.user",
+            "likes",
+            "dislikes",
+            "bookmarks",
         ]);
     },
 };

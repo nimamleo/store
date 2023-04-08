@@ -14,7 +14,7 @@ const {
     checkExistBlog,
 } = require("../utils");
 
-const LikeProduct = {
+const DislikeProduct = {
     type: ResponseType,
     args: {
         productId: { type: GraphQLString },
@@ -32,19 +32,19 @@ const LikeProduct = {
             _id: productId,
             dislikes: user._id,
         });
-        const updateQuery = likedproduct
-            ? { $pull: { likes: user._id } }
-            : { $push: { likes: user._id } };
+        const updateQuery = disLikedproduct
+            ? { $pull: { dislikes: user._id } }
+            : { $push: { dislikes: user._id } };
         await ProductModel.updateOne({ _id: productId }, updateQuery);
         let message;
-        if (!likedproduct) {
-            if (disLikedproduct)
+        if (!disLikedproduct) {
+            if (likedproduct)
                 await ProductModel.updateOne(
                     { _id: productId },
-                    { $pull: { dislikes: user._id } }
+                    { $pull: { likes: user._id } }
                 );
-            message = "product liked";
-        } else message = "product like taken";
+            message = "product disliked";
+        } else message = "product dislike taken";
         return {
             statusCode: StatusCodes.CREATED,
             data: {
@@ -53,7 +53,7 @@ const LikeProduct = {
         };
     },
 };
-const LikeCourse = {
+const DislikeCourse = {
     type: ResponseType,
     args: {
         courseId: { type: GraphQLString },
@@ -71,19 +71,19 @@ const LikeCourse = {
             _id: courseId,
             dislikes: user._id,
         });
-        const updateQuery = likedcourse
-            ? { $pull: { likes: user._id } }
-            : { $push: { likes: user._id } };
+        const updateQuery = disLikedCourse
+            ? { $pull: { dislikes: user._id } }
+            : { $push: { dislikes: user._id } };
         await CourseModel.updateOne({ _id: courseId }, updateQuery);
         let message;
-        if (!likedcourse) {
-            if (disLikedCourse)
+        if (!disLikedCourse) {
+            if (likedcourse)
                 await CourseModel.updateOne(
                     { _id: courseId },
-                    { $pull: { dislikes: user._id } }
+                    { $pull: { likes: user._id } }
                 );
-            message = "course liked";
-        } else message = "course like taken";
+            message = "course disliked";
+        } else message = "course dislike taken";
         return {
             statusCode: StatusCodes.CREATED,
             data: {
@@ -92,7 +92,7 @@ const LikeCourse = {
         };
     },
 };
-const LikeBlog = {
+const DislikeBlog = {
     type: ResponseType,
     args: {
         blogId: { type: GraphQLString },
@@ -110,19 +110,19 @@ const LikeBlog = {
             _id: blogId,
             dislikes: user._id,
         });
-        const updateQuery = likedBlog
-            ? { $pull: { likes: user._id } }
-            : { $push: { likes: user._id } };
+        const updateQuery = disLikedBlog
+            ? { $pull: { dislikes: user._id } }
+            : { $push: { dislikes: user._id } };
         await BlogModel.updateOne({ _id: blogId }, updateQuery);
         let message;
-        if (!likedBlog) {
-            if (disLikedBlog)
+        if (!disLikedBlog) {
+            if (likedBlog)
                 await BlogModel.updateOne(
                     { _id: blogId },
-                    { $pull: { dislikes: user._id } }
+                    { $pull: { likes: user._id } }
                 );
-            message = "blog liked";
-        } else message = "blog like drppted";
+            message = "blog disliked";
+        } else message = "blog dislike drppted";
         return {
             statusCode: StatusCodes.CREATED,
             data: {
@@ -133,7 +133,7 @@ const LikeBlog = {
 };
 
 module.exports = {
-    LikeProduct,
-    LikeBlog,
-    LikeCourse,
+    DislikeProduct,
+    DislikeBlog,
+    DislikeCourse,
 };

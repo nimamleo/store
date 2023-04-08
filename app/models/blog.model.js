@@ -15,7 +15,7 @@ const Schema = new mongoose.Schema(
             required: true,
         },
         likes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
-        disLikes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
+        dislikes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
         bookMarks: {
             type: [mongoose.Types.ObjectId],
             ref: "user",
